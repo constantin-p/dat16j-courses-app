@@ -1,0 +1,18 @@
+# IntelliJ
+/lib/
+.idea/
+*.iml
+*.iws
+
+!dat16j-spring-boilerplate.iml
+
+# macOS
+.DS_Store
+
+# Maven
+log/
+target/
+dependency-reduced-pom.xml
+
+# Local configuration files
+*_secret.*
