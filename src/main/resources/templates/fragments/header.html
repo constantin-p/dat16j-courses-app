@@ -1,0 +1,47 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:fragment="header-css">
+        <link rel="stylesheet" th:href="@{css/main.css}" />
+    </div>
+</head>
+<body>
+<div th:fragment="header-sign-in" class="container grid-lg">
+    <header class="navbar">
+        <section class="navbar-section">
+            <a href="#" class="navbar-brand mr-2">Title</a>
+        </section>
+
+        <section class="navbar-section">
+            <a th:href="@{/sign-up.html}" th:text="#{label.auth.signUp}"></a>
+        </section>
+    </header>
+</div>
+
+<div th:fragment="header-sign-up" class="container grid-lg">
+    <header class="navbar">
+        <section class="navbar-section">
+            <a href="#" class="navbar-brand mr-2">Title</a>
+        </section>
+
+        <section class="navbar-section">
+            <a th:href="@{/sign-in.html}" th:text="#{label.auth.signIn}"></a>
+        </section>
+    </header>
+</div>
+
+<div th:fragment="header-home" class="container grid-lg">
+    <header class="navbar">
+        <section class="navbar-section">
+            <a href="#" class="navbar-brand mr-2">Title</a>
+        </section>
+
+        <section class="navbar-section">
+            <form th:action="@{/sign-out.html}" method="post">
+                <button type="submit" class="btn btn-link" th:text="#{label.auth.signOut}"></button>
+            </form>
+        </section>
+    </header>
+</div>
+
+</body>
+</html>

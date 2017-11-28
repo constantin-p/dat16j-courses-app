@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <div th:replace="fragments/header :: header-css"/>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header-sign-in"/>
+
+
+<div class="container grid-lg">
+    <div class="columns">
+        <div class="col-4 col-mx-auto">
+
+            <form th:action="@{/sign-in.html}" method="POST">
+
+                <!-- email -->
+                <div class="form-group">
+                    <label class="form-label" for="input-email">Email</label>
+                    <input class="form-input" type="text" id="input-email"
+                           placeholder="..."
+                           name="username"/>
+                </div>
+
+                <!-- password -->
+                <div class="form-group">
+                    <label class="form-label" for="input-password">Password</label>
+                    <input class="form-input" type="password" id="input-password"
+                           placeholder="..."
+                           name="password"/>
+
+                    <p class="form-input-hint"
+                       th:if="${param.error != null}"
+                       th:text="#{error.user.invalidCredentials}"></p>
+                    <p class="form-input-hint"
+                       th:if="${param.error != null}"
+                       th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></p>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" th:text="#{label.auth.signIn}"></button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer-lang"/>
+
+
+</body>
+</html>
