@@ -25,10 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        boolean accountNonExpired = true;
-        boolean credentialsNonExpired = true;
-        boolean accountNonLocked = true;
-
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("No user found with the following email: " + email);
@@ -37,10 +33,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new User(
             user.getEmail(),
             user.getHash(),
-            user.isEmailVerified(),
-            accountNonExpired,
-            credentialsNonExpired,
-            accountNonLocked,
+            true,
+            true,
+            true,
+            true,
             getAuthorities(user.getType()));
     }
 

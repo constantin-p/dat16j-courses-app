@@ -2,8 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+
+    <title th:text="#{label.auth.signIn} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
     <div th:replace="fragments/header :: header-css"/>
+    <style type="text/css">
+        body {
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
+    </style>
 </head>
 <body>
 
@@ -12,13 +20,13 @@
 <div class="container  grid-lg">
     <div class="columns">
         <div class="col-8 col-mx-auto">
-           <h1>Welcome</h1>
+            <h1>Welcome</h1>
+            <form th:action="@{/sign-out.html}" method="post">
+                <button type="submit" class="btn btn-link" th:text="#{label.auth.signOut}"></button>
+            </form>
         </div>
     </div>
 </div>
-
-<div th:replace="fragments/footer :: footer-lang"/>
-
 
 </body>
 </html>

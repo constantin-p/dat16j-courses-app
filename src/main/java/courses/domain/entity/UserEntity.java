@@ -16,14 +16,12 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String email;
-    private boolean emailVerified;
 
     @Column(length = 60)
     private String hash;
 
     public UserEntity() {
         super();
-        this.emailVerified = false;
     }
 
     public Long getID() {
@@ -64,14 +62,6 @@ public class UserEntity {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
     }
 
     public String getHash() {

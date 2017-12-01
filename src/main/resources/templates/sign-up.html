@@ -2,94 +2,100 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+
+    <title th:text="#{label.auth.signUp} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
     <div th:replace="fragments/header :: header-css"/>
+    <style type="text/css">
+        body {
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
+    </style>
 </head>
 <body>
 
-<div th:replace="fragments/header :: header-sign-up"/>
+    <div th:replace="fragments/header :: header-lang"/>
 
-
-<div class="container grid-lg">
-    <div class="columns">
-
-        <div class="col-4 col-mx-auto">
-
+    <!-- Content -->
+    <div class="container mb-4">
+        <div class="column col-6 col-sm-10 col-lg-8 col-mx-auto" style="margin-top: 25vh;">
+            <h1 class="text-center"
+                th:text="#{label.auth.signUpHeader}"></h1>
             <form th:action="@{/sign-up.html}" th:object="${user}" method="POST">
-                <!-- firstName -->
-                <div class="form-group">
-                    <label class="form-label" for="input-first-name">First name</label>
-                    <input class="form-input" type="text" id="input-first-name"
-                           placeholder="..."
-                           th:field="*{firstName}"/>
-
-                    <p class="form-input-hint"
-                        th:each="error: ${#fields.errors('firstName')}"
-                        th:text="${error}">Validation error</p>
-                </div>
-
-                <!-- lastName -->
-                <div class="form-group">
-                    <label class="form-label" for="input-last-name">Last name</label>
-                    <input class="form-input" type="text" id="input-last-name"
-                           placeholder="..."
-                           th:field="*{lastName}"/>
-
-                    <p class="form-input-hint"
-                       th:each="error: ${#fields.errors('lastName')}"
-                       th:text="${error}">Validation error</p>
-                </div>
-
-
-                <!-- email -->
-                <div class="form-group">
-                    <label class="form-label" for="input-email">Email</label>
+                <div class="columns">
+                    <div class="form-group column col-6  has-error">
+                        <label class="form-label" for="input-first-name"
+                            th:text="#{label.auth.firstName}"></label>
+                        <input class="form-input" type="text" id="input-first-name"
+                            th:placeholder="#{label.auth.firstName}"
+                            th:field="*{firstName}"/>
+                        <p class="form-input-hint"
+                            th:each="error: ${#fields.errors('firstName')}"
+                            th:text="#{${error}}"></p>
+                    </div>
+                    <div class="form-group column col-6  has-error">
+                        <label class="form-label" for="input-last-name"
+                            th:text="#{label.auth.lastName}"></label>
+                        <input class="form-input" type="text" id="input-last-name"
+                            th:placeholder="#{label.auth.lastName}"
+                            th:field="*{lastName}"/>
+                        <p class="form-input-hint"
+                            th:each="error: ${#fields.errors('lastName')}"
+                            th:text="#{${error}}"></p>
+                    </div>
+                </div> <!-- END columns -->
+                <div class="form-group  has-error">
+                    <label class="form-label" for="input-email"
+                        th:text="#{label.auth.email}"></label>
                     <input class="form-input" type="text" id="input-email"
-                           placeholder="..."
-                           th:field="*{email}"/>
-
+                        th:placeholder="#{label.auth.email}"
+                        th:field="*{email}"/>
                     <p class="form-input-hint"
                        th:each="error: ${#fields.errors('email')}"
-                       th:text="${error}">Validation error</p>
+                       th:text="#{${error}}"></p>
                 </div>
-
-                <!-- password -->
-                <div class="form-group">
-                    <label class="form-label" for="input-password">Password</label>
+                <div class="form-group  has-error">
+                    <label class="form-label" for="input-password"
+                        th:text="#{label.auth.password}"></label>
                     <input class="form-input" type="password" id="input-password"
-                           placeholder="..."
-                           th:field="*{password}"/>
+                        th:placeholder="#{label.auth.password}"
+                        th:field="*{password}"/>
 
+                    <!-- Validation -->
                     <p class="form-input-hint"
-                       th:each="error: ${#fields.errors('password')}"
-                       th:text="${error}">Validation error</p>
+                        th:each="error: ${#fields.errors('password')}"
+                        th:text="#{${error}}"></p>
                 </div>
-
-                <!-- password -->
-                <div class="form-group">
-                    <label class="form-label" for="input-matching-password">Confirm Password</label>
+                <div class="form-group  has-error">
+                    <label class="form-label" for="input-matching-password"
+                        th:text="#{label.auth.confirmPassword}"></label>
                     <input class="form-input" type="password" id="input-matching-password"
-                           placeholder="..."
-                           th:field="*{matchingPassword}"/>
+                        th:placeholder="#{label.auth.confirmPassword}"
+                        th:field="*{matchingPassword}"/>
 
+                    <!-- Validation -->
                     <p class="form-input-hint"
                        th:each="error: ${#fields.globalErrors()}"
-                       th:text="${error}">Validation error</p>
+                       th:text="#{${error}}"></p>
                 </div>
 
-                <div class="form-group">
-                    <button class="btn btn-primary" type="submit" th:text="#{label.auth.signUp}"></button>
-                </div>
 
+                <div class="flex-space-between mt-4">
+                    <span>
+                        <span class="text-gray hide-sm mr-2"
+                            th:text="#{label.auth.signInRedirect}">
+                        </span>
+                        <a class="btn btn-link" 
+                            th:href="@{/sign-in.html}"
+                            th:text="#{label.auth.signIn}"></a>
+                    </span>
+                    <button class="btn btn-primary" type="submit"
+                        th:text="#{label.auth.signUp}"></button>
+                </div>
             </form>
+        </div> <!-- END column col-6 col-sm-10 col-lg-8 col-mx-auto -->
+    </div> <!-- END container -->
 
-        </div>
-    </div>
-
-
-</div>
-
-<div th:replace="fragments/footer :: footer-lang"/>
-gi
 </body>
 </html>

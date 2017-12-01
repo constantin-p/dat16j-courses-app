@@ -6,23 +6,23 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
-@PasswordMatches
+@PasswordMatches(message = "error.auth.differentPasswords")
 public class UserDTO {
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "error.auth.emptyField")
     private String firstName;
 
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "error.auth.emptyField")
     private String lastName;
 
     @NotNull
-    @NotEmpty
-    @ValidEmail
+    @NotEmpty(message = "error.auth.emptyField")
+    @ValidEmail(message = "error.auth.invalidEmail")
     private String email;
 
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "error.auth.emptyField")
     private String password;
     private String matchingPassword;
 

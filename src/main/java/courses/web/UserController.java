@@ -3,8 +3,6 @@ package courses.web;
 import courses.domain.dto.UserDTO;
 import courses.domain.entity.UserEntity;
 
-import courses.domain.entity.VerificationCode;
-import courses.event.OnSignUpSuccessEvent;
 import courses.service.UserService;
 import courses.validation.exception.EmailAlreadyInUse;
 import org.slf4j.Logger;
@@ -19,15 +17,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 @Controller
 public class UserController {
@@ -35,12 +28,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    ApplicationEventPublisher eventPublisher;
-
-    @Autowired
-    private MessageSource messages;
 
 
     @RequestMapping(value = "/sign-up.html", method = RequestMethod.GET)
@@ -55,47 +42,21 @@ public class UserController {
             BindingResult result, WebRequest request, Errors errors) {
 
         UserEntity newUser = new UserEntity();
-        // TODO: Remove
-        System.out.println("\n\n ==> " + (!result.hasErrors()) + errors);
+
         if (!result.hasErrors()) {
             newUser = createUser(userDTO, result);
         }
         if (newUser == null) {
-            result.rejectValue("email", "message.auth.credentialAlreadyInUse");
+            result.rejectValue("email", "error.auth.credentialAlreadyInUse");
         }
-        try {
-            String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnSignUpSuccessEvent(newUser, this.parseLocale(request.getLocale().getLanguage()), appUrl));
-        } catch (Exception exception) {
-            System.out.println("\n\n ==> signUp Exception" + exception);
+
+        if (result.hasErrors()) {
             return new ModelAndView("sign-up", "user", userDTO);
+        } else {
+            return new ModelAndView("redirect:/sign-in.html");
         }
-        System.out.println("\n\n ==> signUp OK");
-        return new ModelAndView("sign-in");
     }
 
-
-    @RequestMapping(value = "/email-verification.html", method = RequestMethod.GET)
-    public String confirmEmail(WebRequest request, Model model, @RequestParam("code") String code) {
-        Locale locale = request.getLocale();
-
-        VerificationCode verificationCode = userService.getVerificationCode(code);
-        if (verificationCode == null) {
-            //String message = messages.getMessage("message.auth.verificationCodeInvalid", null, locale);
-            model.addAttribute("messages", "message.auth.verificationCodeInvalid");
-            return "redirect:/email-verification.html?lang=" + locale.getLanguage();
-        }
-
-        UserEntity user = verificationCode.getUser();
-        if (!verificationCode.getExpirationDate().isAfter(LocalDateTime.now())) {
-            //String messageValue = messages.getMessage("message.auth.verificationCodeExpired", null, locale);
-            model.addAttribute("messages", "message.auth.verificationCodeExpired");
-            return "redirect:/email-verification.html?lang=" + locale.getLanguage();
-        }
-
-        userService.validateEmail(user);
-        return "redirect:/sign-in.html?lang=" + request.getLocale().getLanguage();
-    }
 
     // Helpers
     private UserEntity createUser(UserDTO userDTO, BindingResult result) {
@@ -106,16 +67,5 @@ public class UserController {
             return null;
         }
         return newUser;
-    }
-
-    // TODO: Use LocaleResolver
-    private String parseLocale(String locale) {
-        List<String> supportedOptions = Arrays.asList(new String[] {"en", "da"});
-        for(String option: supportedOptions) {
-            if (locale.startsWith(option)) {
-                return option;
-            }
-        }
-        return supportedOptions.get(0);
     }
 }

@@ -5,43 +5,27 @@
     </div>
 </head>
 <body>
-<div th:fragment="header-sign-in" class="container grid-lg">
-    <header class="navbar">
-        <section class="navbar-section">
-            <a href="#" class="navbar-brand mr-2">Title</a>
-        </section>
 
-        <section class="navbar-section">
-            <a th:href="@{/sign-up.html}" th:text="#{label.auth.signUp}"></a>
-        </section>
-    </header>
-</div>
-
-<div th:fragment="header-sign-up" class="container grid-lg">
-    <header class="navbar">
-        <section class="navbar-section">
-            <a href="#" class="navbar-brand mr-2">Title</a>
-        </section>
-
-        <section class="navbar-section">
-            <a th:href="@{/sign-in.html}" th:text="#{label.auth.signIn}"></a>
-        </section>
-    </header>
-</div>
-
-<div th:fragment="header-home" class="container grid-lg">
-    <header class="navbar">
-        <section class="navbar-section">
-            <a href="#" class="navbar-brand mr-2">Title</a>
-        </section>
-
-        <section class="navbar-section">
-            <form th:action="@{/sign-out.html}" method="post">
-                <button type="submit" class="btn btn-link" th:text="#{label.auth.signOut}"></button>
-            </form>
-        </section>
-    </header>
-</div>
+    <div th:fragment="header-lang" class="container mt-4">
+        <div class="columns">
+            <div class="column col-12 flex-space-between flex-align-baseline">
+                <a href="" class="brand">
+                    <span th:text="#{label.brand}">KEA</span>
+                    <small th:text="#{label.title}"></small>
+                </a>
+                <div class="btn-group">
+                    <a class="btn btn-sm"
+                       th:text="#{label.lang.en}"
+                       th:href="@{?lang=en}"
+                       th:classappend="${param.lang == null or param.lang[0] != 'da'} ? 'active' : ''"></a>
+                    <a class="btn btn-sm"
+                       th:text="#{label.lang.da}"
+                       th:href="@{?lang=da}"
+                       th:classappend="${param.lang != null and param.lang[0] == 'da'} ? 'active' : ''"></a>
+                </div>
+            </div>
+        </div> <!-- END columns -->
+    </div> <!-- END container fragment="header-lang"  -->
 
 </body>
 </html>

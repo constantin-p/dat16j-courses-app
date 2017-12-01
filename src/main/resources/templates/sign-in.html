@@ -2,55 +2,62 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+
+    <title th:text="#{label.auth.signIn} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
     <div th:replace="fragments/header :: header-css"/>
+    <style type="text/css">
+        body {
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
+    </style>
 </head>
 <body>
 
-<div th:replace="fragments/header :: header-sign-in"/>
+    <div th:replace="fragments/header :: header-lang"/>
 
-
-<div class="container grid-lg">
-    <div class="columns">
-        <div class="col-4 col-mx-auto">
-
+    <!-- Content -->
+    <div class="container mb-4">
+        <div class="column col-6 col-sm-10 col-lg-8 col-mx-auto" style="margin-top: 25vh;">
+            <h1 class="text-center"
+                th:text="#{label.auth.signInHeader}"></h1>
             <form th:action="@{/sign-in.html}" method="POST">
-
-                <!-- email -->
                 <div class="form-group">
-                    <label class="form-label" for="input-email">Email</label>
+                    <label class="form-label" for="input-email"
+                        th:text="#{label.auth.email}"></label>
                     <input class="form-input" type="text" id="input-email"
-                           placeholder="..."
-                           name="username"/>
+                        th:placeholder="#{label.auth.email}"
+                        name="username"/>
                 </div>
-
-                <!-- password -->
-                <div class="form-group">
-                    <label class="form-label" for="input-password">Password</label>
+                <div class="form-group has-error">
+                    <label class="form-label" for="input-password"
+                        th:text="#{label.auth.password}"></label>
                     <input class="form-input" type="password" id="input-password"
-                           placeholder="..."
-                           name="password"/>
+                        th:placeholder="#{label.auth.password}"
+                        name="password"/>
 
+                    <!-- Validation -->
                     <p class="form-input-hint"
-                       th:if="${param.error != null}"
-                       th:text="#{error.user.invalidCredentials}"></p>
-                    <p class="form-input-hint"
-                       th:if="${param.error != null}"
-                       th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}"></p>
+                        th:if="${param.error != null}"
+                        th:text="#{error.auth.invalidCredentials}"></p>
                 </div>
 
-                <div class="form-group">
-                    <button class="btn btn-primary" type="submit" th:text="#{label.auth.signIn}"></button>
+                <div class="flex-space-between mt-4">
+                    <span>
+                        <span class="text-gray hide-sm mr-2"
+                            th:text="#{label.auth.signUpRedirect}">
+                        </span>
+                        <a class="btn btn-link" 
+                            th:href="@{/sign-up.html}"
+                            th:text="#{label.auth.signUp}"></a>
+                    </span>
+                    <button class="btn btn-primary" type="submit"
+                        th:text="#{label.auth.signIn}"></button>
                 </div>
-
             </form>
-
-        </div>
-    </div>
-</div>
-
-<div th:replace="fragments/footer :: footer-lang"/>
-
+        </div> <!-- END column col-6 col-sm-10 col-lg-8 col-mx-auto -->
+    </div> <!-- END container -->
 
 </body>
 </html>

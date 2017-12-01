@@ -1,10 +1,8 @@
 package courses.service.impl;
 
 import courses.dao.UserRepository;
-import courses.dao.VerificationCodeRepository;
 import courses.domain.dto.UserDTO;
 import courses.domain.entity.UserEntity;
-import courses.domain.entity.VerificationCode;
 import courses.service.UserService;
 import courses.validation.exception.EmailAlreadyInUse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +16,6 @@ import javax.transaction.Transactional;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private VerificationCodeRepository verificationCodeRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -40,29 +35,6 @@ public class UserServiceImpl implements UserService {
 
         user.setHash(passwordEncoder.encode(userDTO.getPassword()));
         return userRepository.save(user);
-    }
-
-    @Override
-    public UserEntity getUser(String code) {
-        return verificationCodeRepository.findByCode(code).getUser();
-    }
-
-    @Override
-    public void validateEmail(UserEntity user) {
-        user.setEmailVerified(true);
-        userRepository.save(user);
-    }
-
-
-    @Override
-    public void saveVerificationCode(UserEntity user, String code) {
-        VerificationCode verificationCode = new VerificationCode(code, user);
-        verificationCodeRepository.save(verificationCode);
-    }
-
-    @Override
-    public VerificationCode getVerificationCode(String code) {
-        return verificationCodeRepository.findByCode(code);
     }
 
 
