@@ -3,6 +3,7 @@ package courses.service.impl;
 import courses.dao.UserRepository;
 import courses.domain.entity.UserEntity;
 import courses.domain.entity.UserTypeEntity;
+import courses.security.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,16 +24,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public CustomUser loadUserByUsername(String email) throws UsernameNotFoundException {
 
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("No user found with the following email: " + email);
         }
 
-        return new User(
-            user.getEmail(),
-            user.getHash(),
+        return new CustomUser(user,
             true,
             true,
             true,

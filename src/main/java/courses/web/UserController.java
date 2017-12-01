@@ -3,11 +3,13 @@ package courses.web;
 import courses.domain.dto.UserDTO;
 import courses.domain.entity.UserEntity;
 
+import courses.security.CustomUser;
 import courses.service.UserService;
 import courses.validation.exception.EmailAlreadyInUse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -69,5 +71,14 @@ public class UserController {
             return null;
         }
         return newUser;
+    }
+
+    protected static void injectUserData(Model model, Authentication authentication) {
+        UserEntity user = ((CustomUser)authentication.getPrincipal()).getUser();
+
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("initials", user.getFirstName().substring(0, 1) + user.getLastName().substring(0, 1));
     }
 }

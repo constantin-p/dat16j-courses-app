@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+    <div th:fragment="header" class="sidebar-section">
+        <a href="" class="sidebar-brand">
+            <span th:text="#{label.brand}"></span>
+            <small th:text="#{label.title}"></small>
+        </a>
+    </div> <!-- END sidebar-section fragment="header"  -->
+
+    <div th:fragment="footer" class="sidebar-section mt-4">
+        <ul class="menu">
+            <li class="menu-item">
+                <a th:href="@{/teacher/settings}">
+                    <span th:replace="fragments/icon :: settings"/>
+                    <span class="menu-text"
+                        th:text="#{label.button.settings}"></span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a th:href="@{/sign-out}">
+                    <span th:replace="fragments/icon :: sign-out"/>
+                    <span class="menu-text"
+                        th:text="#{label.auth.signOut}"></span>
+                </a>
+            </li>
+        </ul>
+    </div> <!-- END sidebar-section fragment="footer"  -->
+
+
+    <figure th:fragment="avatar" class="avatar">
+        <div class="image"
+            th:text ="${initials}"></div>
+        <div class="description">
+            <span class="name"
+                th:text ="${firstName + lastName}"></span>
+            <span class="email"
+                th:text ="${email}"></span>
+        </div>
+    </figure> <!-- END avatar fragment="avatar"  -->
+</body>
+</html>
