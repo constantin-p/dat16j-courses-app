@@ -56,8 +56,10 @@
                     <h1 class="flex-space-between">
                         <span th:text="#{label.courses.title}"></span>
                         <span>
-                            <a class="btn" th:text="#{label.courses.new}"></a>
-                            <a class="btn" id="courses-update" th:text="#{label.courses.sync}"></a>
+                            <a class="btn btn-primary" th:text="#{label.courses.new}"></a>
+                            <a class="btn" id="courses-update" th:title="#{label.courses.sync}">
+                                <span th:replace="fragments/icon :: sync"></span>
+                            </a>
                         </span>
                     </h1>
                 </header>
@@ -94,7 +96,7 @@
 
             function clearNode(node) {
                 while(node.firstChild) {
-                    node.removeChild(div.firstChild);
+                    node.removeChild(node.firstChild);
                 }
             }
             function renderTable(tableBody, rows) {
@@ -129,9 +131,11 @@
 
                     tableBody.insertAdjacentHTML("beforeend", tableRow)
                 });
+                updateBTN.classList.remove("loading");
             }
 
             function sync() {
+                updateBTN.classList.add("loading");
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', resourceURL);
                 xhr.onload = function() {
