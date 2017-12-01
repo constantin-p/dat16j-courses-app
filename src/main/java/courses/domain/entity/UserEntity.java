@@ -20,9 +20,7 @@ public class UserEntity {
     @Column(length = 60)
     private String hash;
 
-    public UserEntity() {
-        super();
-    }
+    public UserEntity() { }
 
     public Long getID() {
         return ID;

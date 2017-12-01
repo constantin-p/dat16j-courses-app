@@ -12,12 +12,9 @@ public class UserTypeEntity {
 
     private String name;
 
-    public UserTypeEntity() {
-        super();
-    }
+    public UserTypeEntity() { }
 
     public UserTypeEntity(String name) {
-        super();
         this.name = name;
     }
 

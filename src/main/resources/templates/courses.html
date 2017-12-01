@@ -55,14 +55,98 @@
                 <header>
                     <h1 class="flex-space-between">
                         <span th:text="#{label.courses.title}"></span>
-                        <a class="btn" th:text="#{label.courses.new}"></a>
+                        <span>
+                            <a class="btn" th:text="#{label.courses.new}"></a>
+                            <a class="btn" id="courses-update" th:text="#{label.courses.sync}"></a>
+                        </span>
                     </h1>
                 </header>
 
+                <div class="columns">
+                    <div class="column">
+                        <table class="table table-striped" id="courses-table">
+                            <thead>
+                                <tr>
+                                    <th th:text="#{label.courses.nameDA}"></th>
+                                    <th th:text="#{label.courses.nameEN}"></th>
+                                    <th th:text="#{label.courses.ECTS}"></th>
+                                    <th th:text="#{label.courses.language}"></th>
+                                    <th th:text="#{label.courses.minStudents}"></th>
+                                    <th th:text="#{label.courses.expStudents}"></th>
+                                    <th th:text="#{label.courses.maxStudents}"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="courses-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
 
             </div> <!-- END comtainer -->
         </div>
     </div>
 
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(event) {
+  
+            var resourceURL = '/api/courses';
+            var updateBTN = document.getElementById("courses-update");
+            var coursesTABLE = document.getElementById("courses-table-body");
+
+            function clearNode(node) {
+                while(node.firstChild) {
+                    node.removeChild(div.firstChild);
+                }
+            }
+            function renderTable(tableBody, rows) {
+                clearNode(tableBody);
+                rows.forEach(row => {
+                    let tableRow = `
+                        <tr>
+                            <td>
+                                ${row.nameDA}
+                            </td>
+                            <td>
+                                ${row.nameEN}
+                            </td>
+                            <td>
+                                ${row.ectsPoints}
+                            </td>
+
+                            <td>
+                                ${row.language}
+                            </td>
+                            <td>
+                                ${row.minStudents}
+                            </td>
+                            <td>
+                                ${row.expStudents}
+                            </td>
+                            <td>
+                                ${row.maxStudents}
+                            </td>
+                        </tr>
+                    `;
+
+                    tableBody.insertAdjacentHTML("beforeend", tableRow)
+                });
+            }
+
+            function sync() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', resourceURL);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        renderTable(coursesTABLE, JSON.parse(xhr.responseText));
+                    } else {
+                        console.warn('Request failed.  Returned status of ' + xhr.status);
+                    }
+                };
+                xhr.send();
+            }
+
+            updateBTN.addEventListener('click', sync);
+            sync();
+        });
+    </script>
 </body>
 </html>
