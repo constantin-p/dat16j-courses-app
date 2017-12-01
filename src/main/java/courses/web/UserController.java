@@ -8,8 +8,6 @@ import courses.validation.exception.EmailAlreadyInUse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,15 +18,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
 public class UserController {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserService userService;
-
 
     @RequestMapping(value = "/sign-up.html", method = RequestMethod.GET)
     public String showSignUpForm(WebRequest request, Model model) {
@@ -57,6 +54,11 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/sign-out")
+    public String signOut(HttpSession session) {
+        session.invalidate();
+        return "redirect:/sign-in.html";
+    }
 
     // Helpers
     private UserEntity createUser(UserDTO userDTO, BindingResult result) {

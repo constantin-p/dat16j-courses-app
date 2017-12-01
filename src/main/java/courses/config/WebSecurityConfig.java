@@ -1,5 +1,6 @@
 package courses.config;
 
+import courses.security.CustomAuthenticationSuccessHandler;
 import courses.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,21 +20,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    private CustomAuthenticationSuccessHandler authenticationSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
             .antMatchers("/css/**").permitAll()
             .antMatchers("/sign-in*", "/sign-up*").anonymous()
+            .antMatchers("/teacher*").hasAuthority("TEACHER")
+            .antMatchers("/student*").hasAuthority("STUDENT")
+            .antMatchers("/admin*").hasAuthority("ADMIN")
             .anyRequest().authenticated()
             .and()
         .formLogin()
             .loginPage("/sign-in.html")
-            .defaultSuccessUrl("/home.html",true)
+            .successHandler(authenticationSuccessHandler)
             .failureUrl("/sign-in.html?error=true")
             .and()
         .logout()
-            .logoutUrl("/sign-out.html")
+            .logoutUrl("/sign-out")
             .logoutSuccessUrl("/sign-in.html");
     }
 

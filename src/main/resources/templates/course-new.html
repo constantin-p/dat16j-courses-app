@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 
     <title th:text="#{label.auth.signIn} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <div th:replace="fragments/header :: header-css"/>
     <style type="text/css">
         body {
             opacity: 0;
@@ -16,15 +16,9 @@
 </head>
 <body>
 
-    <!-- ACCOUNT INACTIVE -->
-    <div class="container">
-        <div class="col-6 col-sm-10 col-lg-8 col-mx-auto" style="margin-top: 25vh;">
-            <h1 class="text-center"
-                th:text="#{label.account.notActivatedHeader}"></h1>
-            <p class="text-center"
-                th:text="#{label.account.notActivated}"></p>
-        </div>
-    </div> <!-- END container -->
+
+new course
+
 
 </body>
 </html>
