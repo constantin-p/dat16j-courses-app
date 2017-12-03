@@ -13,27 +13,25 @@ public class CourseDTO {
     @NotNull
     @NotEmpty(message = "error.auth.emptyField")
     private String nameEN;
-    @NotNull
-    @NotEmpty(message = "error.auth.emptyField")
+    @NotNull(message = "error.auth.emptyField")
     private boolean isMandatory;
-    @NotNull
-    @NotEmpty(message = "error.auth.emptyField")
+    @NotNull(message = "error.auth.emptyField")
     private int ectsPoints;
     @NotNull
     @NotEmpty(message = "error.auth.emptyField")
     private String language;
-    @NotNull
-    @NotEmpty(message = "error.auth.emptyField")
+    @NotNull(message = "error.auth.emptyField")
     private int minStudents;
-    @NotNull
-    @NotEmpty(message = "error.auth.emptyField")
+    @NotNull(message = "error.auth.emptyField")
     private int expStudents;
-    @NotNull
-    @NotEmpty(message = "error.auth.emptyField")
+    @NotNull(message = "error.auth.emptyField")
     private int maxStudents;
     @NotNull
     @NotEmpty(message = "error.auth.emptyField")
     private String prerequisites;
+    @NotNull
+    @NotEmpty(message = "error.auth.emptyField")
+    private String content;
     @NotNull
     @NotEmpty(message = "error.auth.emptyField")
     private String outcome;
@@ -122,6 +120,14 @@ public class CourseDTO {
 
     public void setPrerequisites(String prerequisites) {
         this.prerequisites = prerequisites;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getOutcome() {

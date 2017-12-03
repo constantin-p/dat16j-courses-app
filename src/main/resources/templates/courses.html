@@ -56,7 +56,9 @@
                     <h1 class="flex-space-between">
                         <span th:text="#{label.courses.title}"></span>
                         <span>
-                            <a class="btn btn-primary" th:text="#{label.courses.new}"></a>
+                            <a class="btn btn-primary" 
+                                th:href="@{/teacher/courses/new}"
+                                th:text="#{label.courses.new}"></a>
                             <a class="btn" id="courses-update" th:title="#{label.courses.sync}">
                                 <span th:replace="fragments/icon :: sync"></span>
                             </a>
@@ -76,6 +78,7 @@
                                     <th th:text="#{label.courses.minStudents}"></th>
                                     <th th:text="#{label.courses.expStudents}"></th>
                                     <th th:text="#{label.courses.maxStudents}"></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody id="courses-table-body"></tbody>
@@ -87,7 +90,8 @@
         </div>
     </div>
 
-    <script type="text/javascript">
+    <script th:inline="javascript">
+    /*<![CDATA[*/
         document.addEventListener("DOMContentLoaded", function(event) {
   
             var resourceURL = '/api/courses';
@@ -99,35 +103,45 @@
                     node.removeChild(node.firstChild);
                 }
             }
+
             function renderTable(tableBody, rows) {
                 clearNode(tableBody);
                 rows.forEach(row => {
-                    let tableRow = `
-                        <tr>
-                            <td>
-                                ${row.nameDA}
-                            </td>
-                            <td>
-                                ${row.nameEN}
-                            </td>
-                            <td>
-                                ${row.ectsPoints}
-                            </td>
+                    let tableRow = "" +
+                        "<tr>" +
+                            "<td>" +
+                                row.nameDA +
+                            "</td>" +
+                            "<td>" +
+                                row.nameEN +
+                            "</td>" +
+                            "<td>" +
+                                row.ectsPoints +
+                            "</td>" +
 
-                            <td>
-                                ${row.language}
-                            </td>
-                            <td>
-                                ${row.minStudents}
-                            </td>
-                            <td>
-                                ${row.expStudents}
-                            </td>
-                            <td>
-                                ${row.maxStudents}
-                            </td>
-                        </tr>
-                    `;
+                            "<td>" +
+                                row.language +
+                            "</td>" +
+                            "<td>" +
+                                row.minStudents +
+                            "</td>" +
+                            "<td>" +
+                                row.expStudents +
+                            "</td>" +
+                            "<td>" +
+                                row.maxStudents +
+                            "</td>" +
+                            "<td>" +
+                                "<button data-editid='" + row.id + "'' id='edit-course-" + row.id + "'" +
+                                    "class='btn btn-sm btn-primary mr-1'>" +
+                                    /*[[#{label.courses.update}]]*/"Edit"
+                                 + "</button>" +
+                                "<button data-deleteid='" + row.id + "'' id='delete-course-" + row.id + "'" +
+                                    "class='btn btn-sm btn-error'>" +
+                                    /*[[#{label.courses.delete}]]*/"Delete"
+                                 + "</button>" +
+                            "</td>" +
+                        "</tr>";
 
                     tableBody.insertAdjacentHTML("beforeend", tableRow)
                 });
@@ -150,7 +164,50 @@
 
             updateBTN.addEventListener('click', sync);
             sync();
+
+            // DELETE courses
+            function deleteCourse(courseID) {
+                console.info("DELETE course:", courseID);
+                var deleteBTN = document.getElementById("delete-course-" + courseID);
+                deleteBTN.classList.add("loading");
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', '/api/courses/' + courseID);
+                xhr.setRequestHeader(
+                    /*[[${_csrf.headerName}]]*/"X-CSRF-TOKEN",
+                    /*[[${_csrf.token}]]*/""
+                );
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        console.log("Course deleted! SYNC");
+                        deleteBTN.classList.remove("loading");
+                        sync();
+                    } else {
+                        console.warn('Request failed. Returned status of ' + xhr.status, xhr.responseText);
+                    }
+                };
+                xhr.send();
+            }
+
+            // EDIT courses
+            function editCourse(courseID) {
+                console.info("EDIT course:", courseID);
+                window.location.href = "/teacher/courses/edit/" + courseID;
+            }
+
+            coursesTABLE.addEventListener('click', function(event) {
+                if (event.target.tagName.toLowerCase() === 'button') {
+                    if (event.target.dataset.deleteid != null) {
+                        deleteCourse(event.target.dataset.deleteid)
+                    }
+                    if (event.target.dataset.editid != null) {
+                        editCourse(event.target.dataset.editid)
+                    }
+                }
+            });
         });
+    /*]]>*/
     </script>
 </body>
 </html>

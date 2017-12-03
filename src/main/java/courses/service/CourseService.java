@@ -6,4 +6,5 @@ import courses.validation.exception.InvalidCourseProperty;
 
 public interface CourseService {
     CourseEntity saveCourse(CourseDTO courseDTO) throws InvalidCourseProperty;
+    CourseEntity updateCourse(CourseEntity course, CourseDTO courseDTO) throws InvalidCourseProperty;
 }

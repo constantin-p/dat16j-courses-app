@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+
+    <title th:text="#{label.courses.titleUpdate} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <style type="text/css">
+        body {
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
+    </style>
+
+    <script type="text/javascript" th:src="@{/js/select.js}"></script>
+</head>
+<body>
+
+
+    <div class="page">
+        <!-- off-screen toggle button -->
+        <a class="page-toggle" href="#sidebar-show">
+            <span class="icon-wrapper">
+                <span class="icon-menu"></span>
+            </span>
+        </a>
+
+        <!-- Sidebar -->
+        <div id="sidebar-show" class="page-sidebar sidebar bg-brand-teacher">
+            <div th:replace="fragments/sidebar :: header"/>
+
+            <div class="sidebar-section mb-4">
+                <ul class="menu">
+                    <li class="menu-item mb-4 mt-2">
+                        <figure th:replace="fragments/sidebar :: avatar"/>
+                    </li>
+                    <li class="menu-item">
+                        <a class="active"
+                            th:href="@{/teacher/courses}">
+                            <span th:replace="fragments/icon :: courses"/>
+                            <span class="menu-text"
+                                th:text="#{label.button.courses}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div th:replace="fragments/sidebar :: footer"/>
+        </div> <!-- END sidebar -->
+
+        <a class="page-overlay" href="#sidebar-hide"></a>
+
+        <div class="page-content-wrapper">
+            <!-- Content -->
+            <div class="container">
+                <header>
+                    <h1 class="flex-space-between">
+                        <span th:text="#{label.courses.titleUpdate}"></span>
+                        <span>
+                            <a class="btn btn-primary" id="save"
+                                th:text="#{label.courses.save}"></a>
+                        </span>
+                    </h1>
+                </header>
+
+                <div class="columns">
+                    <div class="column col-9 col-sm-12 mt-4">
+                        <form class="form-horizontal mt-4" id="form-course">
+                            <!-- Name (Danish) -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-nameda"
+                                        th:text="#{label.courses.nameDA}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-input" type="text" id="input-nameda"
+                                        name="nameDA"
+                                        th:placeholder="#{label.courses.nameDA}"/>
+                                    <p class="form-input-hint" id="nameDA"></p>
+                                </div>
+                            </div>
+                            <!-- Name (English) -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-nameen"
+                                        th:text="#{label.courses.nameEN}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-input" type="text" id="input-nameen"
+                                        name="nameEN"
+                                        th:placeholder="#{label.courses.nameEN}"/>
+                                    <p class="form-input-hint" id="nameEN"></p>
+                                </div>
+                            </div>
+                            <!-- Study Programme -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-programmes"
+                                        th:text="#{label.courses.studyProgramme}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <select id="input-programmes"
+                                        name="programmes"></select>
+                                    <p class="form-input-hint" id="programmes"></p>
+                                </div>
+                            </div>
+                            <!-- Mandatory -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-mandatory"
+                                        th:text="#{label.courses.mandatory}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <label class="form-switch">
+                                        <input type="checkbox" id="input-mandatory"
+                                            name="isMandatory"/>
+                                        <i class="form-icon"></i>
+                                    </label>
+                                    <p class="form-input-hint" id="isMandatory"></p>
+                                </div>
+                            </div>
+
+                            <!-- Name (English) -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-ects"
+                                        th:text="#{label.courses.ECTS}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-input" type="number" id="input-ects"
+                                        name="ectsPoints"
+                                        th:placeholder="#{label.courses.ECTS}"/>
+                                    <p class="form-input-hint" id="ectsPoints"></p>
+                                </div>
+                            </div>
+                            <!-- Language -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-language"
+                                        th:text="#{label.courses.language}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <select id="input-language"
+                                        name="language"></select>
+                                    <p class="form-input-hint" id="language"></p>
+                                </div>
+                            </div>
+
+                            <!-- Name (English) -->
+                            <div class="form-group">
+                                <div class="col-3">
+                                    <label class="form-label"
+                                        th:text="#{label.courses.nrOfStudents}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <div class="columns">
+                                        <div class="column col-4">
+                                            <input class="form-input" type="number" id="input-min"
+                                                name="minStudents"/>
+                                            <p class="form-input-hint"
+                                                th:text="#{label.courses.minNumber}"></p>
+                                            <p class="form-input-hint" id="minStudents"></p>
+
+                                        </div>
+                                        <div class="column col-4">
+                                            <input class="form-input" type="number" id="input-exp"
+                                                name="expStudents"/>
+                                            <p class="form-input-hint"
+                                                th:text="#{label.courses.expNumber}"></p>
+                                            <p class="form-input-hint" id="expStudents"></p>
+
+                                        </div>
+                                        <div class="column col-4">
+                                            <input class="form-input" type="number" id="input-max"
+                                                name="maxStudents"/>
+                                            <p class="form-input-hint"
+                                                th:text="#{label.courses.maxNumber}"></p>
+                                            <p class="form-input-hint" id="maxStudents"></p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Prerequisites -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-prerequisites"
+                                        th:text="#{label.courses.prerequisites}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <textarea class="form-input" id="input-prerequisites" rows="3"
+                                        name="prerequisites"
+                                        th:placeholder="#{label.courses.prerequisites}"></textarea>
+                                    <p class="form-input-hint" id="prerequisites"></p>
+                                </div>
+                            </div>
+                            <!-- Learning outcome -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-outcome"
+                                        th:text="#{label.courses.outcome}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <textarea class="form-input" id="input-outcome" rows="3"
+                                        name="outcome"
+                                        th:placeholder="#{label.courses.outcome}"></textarea>
+                                    <p class="form-input-hint" id="outcome"></p>
+                                </div>
+                            </div>
+                            <!-- Content -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-content"
+                                        th:text="#{label.courses.content}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <textarea class="form-input" id="input-content" rows="3"
+                                        name="content"
+                                        th:placeholder="#{label.courses.content}"></textarea>
+                                    <p class="form-input-hint" id="content"></p>
+                                </div>
+                            </div>
+                            <!-- Learning activities -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-activities"
+                                        th:text="#{label.courses.activities}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <textarea class="form-input" id="input-activities" rows="3"
+                                        name="activities"
+                                        th:placeholder="#{label.courses.activities}"></textarea>
+                                    <p class="form-input-hint" id="activities"></p>
+                                </div>
+                            </div>
+                            <!-- Exam form -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-exam"
+                                        th:text="#{label.courses.exam}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <textarea class="form-input" id="input-exam" rows="3"
+                                        name="examForm"
+                                        th:placeholder="#{label.courses.exam}"></textarea>
+                                    <p class="form-input-hint" id="examForm"></p>
+                                </div>
+                            </div>
+                            <!-- Teachers -->
+                            <div class="form-group has-error">
+                                <div class="col-3">
+                                    <label class="form-label" for="input-teachers"
+                                        th:text="#{label.courses.teachers}"></label>
+                                </div>
+                                <div class="col-9">
+                                    <select id="input-teachers"
+                                        name="teachers"></select>
+                                    <p class="form-input-hint" id="teachers"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div> <!-- END comtainer -->
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function(event) {
+            function processUsers(users) {
+                return users.map(user => {
+                    return {
+                        value: user.id,
+                        text: user.firstName + ' ' + user.lastName,
+                    };
+                });
+            };
+
+            function processProgrammes(programmes) {
+                return programmes.map(programme => {
+                    return {
+                        value: programme.id,
+                        text: programme.nameEN, // TODO: use user locale
+                    };
+                });
+            };
+
+            function setupLanguagesSelect() {
+                var selectLanguage = document.getElementById("input-language");
+                
+                if (selectLanguage != null) {
+                    var selector = new Selectr(selectLanguage, {
+                        data: [
+                            {
+                                value: /*[[#{label.lang.en}]]*/"English",
+                                text: /*[[#{label.lang.en}]]*/"English"
+                            },
+                            {
+                                value: /*[[#{label.lang.da}]]*/"Danish",
+                                text: /*[[#{label.lang.da}]]*/"Danish"
+                            },
+                        ],
+                        searchable: false,
+                        placeholder: /*[[#{label.courses.courseLanguage}]]*/"..."
+                    });
+                    
+                    return selector;
+                } else {
+                    console.warn("ERROR: No element found: #input-teachers");
+                }
+            }
+
+            function setupProgrammesSelect() {
+                var resourceURL = '/api/programmes';
+                var selectProgramme = document.getElementById("input-programmes");
+
+                if (selectProgramme != null) {
+                    var selector = new Selectr(selectProgramme, {
+                        multiple: true,
+                        defaultSelected: false,
+                        placeholder: /*[[#{label.courses.studyProgramme}]]*/"..."
+                    });
+
+                    selector.on("selectr.init", function() {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', resourceURL);
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                selector.addOption(processProgrammes(JSON.parse(xhr.responseText)));
+                            } else {
+                                console.warn('Request failed.  Returned status of ' + xhr.status);
+                            }
+                        };
+                        xhr.send();
+                    });
+                    return selector;
+                } else {
+                    console.warn("ERROR: No element found: #input-programmes");
+                }
+            }
+
+            function setupTeachersSelect() {
+                var resourceURL = '/api/teachers';
+                var selectTeachers = document.getElementById("input-teachers");
+
+                if (selectTeachers != null) {
+                    var selector = new Selectr(selectTeachers, {
+                        multiple: true,
+                        defaultSelected: false,
+                        placeholder: /*[[#{label.courses.teachers}]]*/"..."
+                    });
+
+                    selector.on("selectr.init", function() {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', resourceURL);
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                selector.addOption(processUsers(JSON.parse(xhr.responseText)));
+                            } else {
+                                console.warn('Request failed.  Returned status of ' + xhr.status);
+                            }
+                        };
+                        xhr.send();
+                    });
+                    return selector;
+                } else {
+                    console.warn("ERROR: No element found: #input-teachers");
+                }
+            }
+
+            var languageSelector = setupLanguagesSelect();
+            var programmesSelector = setupProgrammesSelect();
+            var teachersSelector = setupTeachersSelect();
+
+
+            // VALIDATION
+            function clearNode(node) {
+                while(node.firstChild) {
+                    node.removeChild(node.firstChild);
+                }
+            }
+
+            function cleanErrors(formObj) {
+                Object.keys(formObj).forEach(key => {
+                    var errorLabel = document.getElementById(key);
+                    if (errorLabel != null) {
+                        clearNode(errorLabel);
+                    }
+                });
+            }
+
+            function getError(errorKey) {
+                var errorMap = {
+                    "error.auth.emptyField": /*[[#{error.auth.emptyField}]]*/"Required",
+                };
+
+                if (errorMap[errorKey] != null) {
+                    return errorMap[errorKey];
+                }
+                return errorKey;
+            };
+
+            function showErrors(responsObj) {
+                if (responsObj.errors) {
+                    responsObj.errors.forEach(error => {
+                        var errorLabel = document.getElementById(error.field);
+                        if (errorLabel != null) {
+                            var span = document.createElement("span");
+                            span.appendChild(document.createTextNode(getError(error.defaultMessage)));
+                            errorLabel.appendChild(span);
+                        }
+                    })
+                }
+            }
+
+            // FORM to JSON
+            function getSelectValues(select) {
+                var result = [];
+                var options = select && select.options;
+                var opt;
+
+                for (var i = 0; i < options.length; i++) {
+                    opt = options[i];
+
+                    if (opt.selected) {
+                        result.push(opt.value || opt.text);
+                    }
+                }
+                return result;
+            }
+
+            function formToJSON() {
+                var form = document.getElementById("form-course");
+
+                var formObj = {};
+                var elements = form.querySelectorAll("input, select, textarea");
+                for( var i = 0; i < elements.length; ++i ) {
+                    var element = elements[i];
+                    var name = element.name;
+
+                    var value = element.value;
+                    if (element.type === "checkbox") {
+                        value = element.checked;
+                    } else if (element.type === "select-multiple") {
+                        value = getSelectValues(element);
+                    }
+
+                    if( name ) {
+                        formObj[name] = value;
+                    }
+                }
+
+                return formObj;
+            }
+
+
+            // CREATE Course
+            var initialData = /*[[${course}]]*/"";
+
+            var resourceURL = '/api/courses/' + initialData.ID;
+            var saveBTN = document.getElementById("save");
+
+            function save() {
+                saveBTN.classList.add("loading");
+
+                var formObj = formToJSON();
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('PUT', resourceURL);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader(
+                    /*[[${_csrf.headerName}]]*/"X-CSRF-TOKEN",
+                    /*[[${_csrf.token}]]*/""
+                );
+                
+
+                xhr.onload = function() {
+                    saveBTN.classList.remove("loading");
+
+                    if (xhr.status === 200) {
+                        console.log("Course updated! REDIRECT");
+                        window.location.href = "/teacher/courses";
+                    } else {
+                        console.warn('Request failed. Returned status of ' + xhr.status, xhr.response);
+
+                        cleanErrors(formObj);
+                        showErrors(JSON.parse(xhr.responseText));
+                    }
+                };
+
+                xhr.send(JSON.stringify(formObj));
+            }
+
+            saveBTN.addEventListener('click', save);
+
+            // LOAD DATA
+            function loadData() {
+                var form = document.getElementById("form-course");
+
+                var elements = form.querySelectorAll("input, select, textarea");
+                for(var i = 0; i < elements.length; i++) {
+                    var element = elements[i];
+                    var name = element.name;
+                    
+                    if(name != null) {
+                        
+                        var existingValue = initialData[name];
+                        if (existingValue != null) {
+                           
+                            if (element.type === "checkbox") {
+                                element.checked = existingValue;
+                            } else if (element.type === "select-multiple") {
+                                var values = [];
+                                for (var j = 0; j < existingValue.length; j++) {
+                                    values.push(existingValue[j].ID);
+                                }
+                                if (name === "programmes") {
+                                    programmesSelector.setValue(values);
+                                } else if (name === "teachers") {
+                                    teachersSelector.setValue(values);
+                                }
+                            } else if (element.type === "select") {
+                                if (name === "language") {
+                                    languageSelector.setValue(existingValue);
+                                }
+                            } else {
+                                element.value = existingValue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            loadData();
+        });
+    /*]]>*/
+    </script>
+</body>
+</html>

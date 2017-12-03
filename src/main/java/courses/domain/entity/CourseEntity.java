@@ -22,6 +22,7 @@ public class CourseEntity {
     private int maxStudents;
     private String prerequisites;
     private String outcome;
+    private String content;
     private String activities;
     private String examForm;
 
@@ -135,6 +136,14 @@ public class CourseEntity {
 
     public void setOutcome(String outcome) {
         this.outcome = outcome;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getActivities() {

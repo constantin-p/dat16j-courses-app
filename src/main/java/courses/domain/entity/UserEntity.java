@@ -1,5 +1,7 @@
 package courses.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,6 +19,7 @@ public class UserEntity {
     private String lastName;
     private String email;
 
+    @JsonIgnore
     @Column(length = 60)
     private String hash;
 
