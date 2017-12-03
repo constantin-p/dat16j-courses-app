@@ -133,7 +133,7 @@
             function renderTable(tableBody, rows) {
                 clearNode(tableBody);
                 rows.forEach(row => {
-                    let actions = "<button data-applyid='" + row.id + "'' id='apply-course-" + row.id + "'" +
+                    var actions = "<button data-applyid='" + row.id + "'' id='apply-course-" + row.id + "'" +
                             "class='btn btn-sm btn-primary mr-1'>" +
                             /*[[#{label.courses.apply}]]*/"Apply"
                          + "</button>";
@@ -148,7 +148,7 @@
                         }
                     }
 
-                    let tableRow = "" +
+                    var tableRow = "" +
                         "<tr>" +
                             "<td>" +
                                 row.nameDA +

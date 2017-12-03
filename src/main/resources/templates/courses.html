@@ -76,8 +76,8 @@
                                     <th th:text="#{label.courses.ECTS}"></th>
                                     <th th:text="#{label.courses.language}"></th>
                                     <th th:text="#{label.courses.minStudents}"></th>
-                                    <th th:text="#{label.courses.expStudents}"></th>
                                     <th th:text="#{label.courses.maxStudents}"></th>
+                                    <th th:text="#{label.courses.enrolledNumber}"></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -107,7 +107,25 @@
             function renderTable(tableBody, rows) {
                 clearNode(tableBody);
                 rows.forEach(row => {
-                    let tableRow = "" +
+                    var studentList = row.students.map(student => {
+                        return "<li>" + student.firstName + " " + student.lastName + ", " + student.email +  "</li>";
+                    }).join("");
+
+                    var students = "<div class='popover popover-left'>" +
+                        "<span>" + row.students.length + "</span>" +
+                            "<div class='popover-container'>" +
+                                "<div class='card'>" +
+                                    "<ul class='menu'>" +
+                                        studentList +
+                                    "</ul>" +
+                                "</div>" +
+                            "</div>" +
+                        "</div>";
+                    if (!(row.students.length > 0)) {
+                        students = row.students.length;
+                    }
+
+                    var tableRow = "" +
                         "<tr>" +
                             "<td>" +
                                 row.nameDA +
@@ -126,10 +144,10 @@
                                 row.minStudents +
                             "</td>" +
                             "<td>" +
-                                row.expStudents +
+                                row.maxStudents +
                             "</td>" +
                             "<td>" +
-                                row.maxStudents +
+                                students +
                             "</td>" +
                             "<td>" +
                                 "<button data-editid='" + row.id + "'' id='edit-course-" + row.id + "'" +

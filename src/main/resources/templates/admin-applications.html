@@ -103,7 +103,7 @@
             function renderTable(tableBody, rows) {
                 clearNode(tableBody);
                 rows.forEach(row => {
-                    let actions = "<button data-acceptid='" + row.id + "'' id='accept-application-" + row.id + "'" +
+                    var actions = "<button data-acceptid='" + row.id + "'' id='accept-application-" + row.id + "'" +
                             "class='btn btn-sm btn-primary mr-1'>" +
                             /*[[#{label.applications.accept}]]*/"Accept"
                          + "</button>" +
@@ -116,7 +116,7 @@
                         actions = /*[[#{label.applications.actionTaken}]]*/"Action taken";
                     }
 
-                    let tableRow = "" +
+                    var tableRow = "" +
                         "<tr>" +
                             "<td>" +
                                 row.course.nameDA +
