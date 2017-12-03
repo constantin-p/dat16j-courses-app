@@ -104,13 +104,21 @@
                 }
             }
 
+            function applicationExists(courseID) {
+                for (var i = 0; i < applications.length; i++) {
+                    if (applications[i].course.id == courseID) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             function isApplicationActive(courseID) {
                 for (var i = 0; i < applications.length; i++) {
                     if (applications[i].course.id == courseID) {
                         return applications[i].active;
                     }
                 }
-                return false;
             }
 
             function isEnrolled(course) {
@@ -132,8 +140,12 @@
 
                     if (isEnrolled(row)) {
                         actions = /*[[#{label.courses.enrolled}]]*/"Enrolled";
-                    } else if (isApplicationActive(row.id)) {
-                        actions = /*[[#{label.courses.pending}]]*/"Application pending";
+                    } else if (applicationExists(row.id)) {
+                        if (isApplicationActive(row.id)) {
+                            actions = /*[[#{label.courses.pending}]]*/"Application pending";
+                        } else {
+                            actions = /*[[#{label.courses.denied}]]*/"Application denied";
+                        }
                     }
 
                     let tableRow = "" +
