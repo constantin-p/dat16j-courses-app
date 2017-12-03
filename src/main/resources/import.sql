@@ -23,3 +23,8 @@ INSERT INTO users (id, email, first_name, hash, last_name, type_id) VALUES (5, '
 INSERT INTO users (id, email, first_name, hash, last_name, type_id) VALUES (6, 'student2@student.com', 'Annie', '$2a$10$hXcQjOyfYr2CGCs07sbnsOhx7jngrUDmAi.CabxNaNTVhbnmW3Bju', 'Wills', 3);
 INSERT INTO users (id, email, first_name, hash, last_name, type_id) VALUES (7, 'student3@student.com', 'Anthony', '$2a$10$oyaNq9cF5sASzznyWaDLtegIY92MJFtPY0zqPpZtYv7Nx66QOe.1a', 'Hall', 3);
 INSERT INTO users (id, email, first_name, hash, last_name, type_id) VALUES (8, 'john@smith.com', 'John', '$2a$10$Mqw.3nogV8q66Cms1vR8o.n1cAaG5zdRpe.TyoBtyZFqKu97tDxAK', 'Smith', NULL);
+
+
+-- Demo Applications
+INSERT INTO applications (id, created_at, is_rejected, is_active, course_id, student_id) VALUES (1, '2017-12-03 12:17:11', 0, 1, 1, 5);
+INSERT INTO applications (id, created_at, is_rejected, is_active, course_id, student_id) VALUES (2, '2017-12-03 12:17:11', 0, 1, 1, 6);

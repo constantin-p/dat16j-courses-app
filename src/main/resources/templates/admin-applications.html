@@ -5,7 +5,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 
-    <title th:text="#{label.courses.title} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
+    <title th:text="#{label.applications.title} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
     <style type="text/css">
         body {
@@ -25,7 +25,7 @@
         </a>
 
         <!-- Sidebar -->
-        <div id="sidebar-show" class="page-sidebar sidebar bg-brand-student">
+        <div id="sidebar-show" class="page-sidebar sidebar bg-brand-admin">
             <div th:replace="fragments/sidebar :: header"/>
 
             <div class="sidebar-section mb-4">
@@ -35,10 +35,10 @@
                     </li>
                     <li class="menu-item">
                         <a class="active"
-                            th:href="@{/student/courses}">
-                            <span th:replace="fragments/icon :: courses"/>
+                            th:href="@{/admin/applications}">
+                            <span th:replace="fragments/icon :: applications"/>
                             <span class="menu-text"
-                                th:text="#{label.button.courses}"></span>
+                                th:text="#{label.button.applications}"></span>
                         </a>
                     </li>
                 </ul>
@@ -54,9 +54,9 @@
             <div class="container">
                 <header>
                     <h1 class="flex-space-between">
-                        <span th:text="#{label.courses.title}"></span>
+                        <span th:text="#{label.applications.titleNew}"></span>
                         <span>
-                            <a class="btn" id="courses-update" th:title="#{label.courses.sync}">
+                            <a class="btn" id="applications-update" th:title="#{label.courses.sync}">
                                 <span th:replace="fragments/icon :: sync"></span>
                             </a>
                         </span>
@@ -70,11 +70,10 @@
                                 <tr>
                                     <th th:text="#{label.courses.nameDA}"></th>
                                     <th th:text="#{label.courses.nameEN}"></th>
-                                    <th th:text="#{label.courses.ECTS}"></th>
-                                    <th th:text="#{label.courses.language}"></th>
-                                    <th th:text="#{label.courses.minStudents}"></th>
-                                    <th th:text="#{label.courses.expStudents}"></th>
-                                    <th th:text="#{label.courses.maxStudents}"></th>
+                                    <th th:text="#{label.courses.enrolledNumber}"></th>
+                                    <th th:text="#{label.auth.firstName}"></th>
+                                    <th th:text="#{label.auth.lastName}"></th>
+                                    <th th:text="#{label.auth.email}"></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -91,12 +90,9 @@
     /*<![CDATA[*/
         document.addEventListener("DOMContentLoaded", function(event) {
   
-            var resourceURL = '/api/courses';
-            var applicationsURL = '/api/applications/student/' + /*[[${ID}]]*/"";
-            var applyURLPrefix = '/api/applications/' + /*[[${ID}]]*/"";
-            var updateBTN = document.getElementById("courses-update");
-            var coursesTABLE = document.getElementById("courses-table-body");
-            var applications = [];
+            var resourceURL = '/api/applications';
+            var updateBTN = document.getElementById("applications-update");
+            var applicationsTABLE = document.getElementById("courses-table-body");
 
             function clearNode(node) {
                 while(node.firstChild) {
@@ -104,61 +100,42 @@
                 }
             }
 
-            function isApplicationActive(courseID) {
-                for (var i = 0; i < applications.length; i++) {
-                    if (applications[i].course.id == courseID) {
-                        return applications[i].active;
-                    }
-                }
-                return false;
-            }
-
-            function isEnrolled(course) {
-                for (var i = 0; i < course.students.length; i++) {
-                    if (course.students[i].id == /*[[${ID}]]*/"") {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             function renderTable(tableBody, rows) {
                 clearNode(tableBody);
                 rows.forEach(row => {
-                    let actions = "<button data-applyid='" + row.id + "'' id='apply-course-" + row.id + "'" +
+                    let actions = "<button data-acceptid='" + row.id + "'' id='accept-application-" + row.id + "'" +
                             "class='btn btn-sm btn-primary mr-1'>" +
-                            /*[[#{label.courses.apply}]]*/"Apply"
+                            /*[[#{label.applications.accept}]]*/"Accept"
+                         + "</button>" +
+                        "<button data-rejectid='" + row.id + "'' id='reject-application-" + row.id + "'" +
+                            "class='btn btn-sm btn-error'>" +
+                            /*[[#{label.applications.reject}]]*/"Reject"
                          + "</button>";
 
-                    if (isEnrolled(row)) {
-                        actions = /*[[#{label.courses.enrolled}]]*/"Enrolled";
-                    } else if (isApplicationActive(row.id)) {
-                        actions = /*[[#{label.courses.pending}]]*/"Application pending";
+                    if (!row.active) {
+                        actions = /*[[#{label.applications.actionTaken}]]*/"Action taken";
                     }
 
                     let tableRow = "" +
                         "<tr>" +
                             "<td>" +
-                                row.nameDA +
+                                row.course.nameDA +
                             "</td>" +
                             "<td>" +
-                                row.nameEN +
+                                row.course.nameEN +
                             "</td>" +
                             "<td>" +
-                                row.ectsPoints +
+                                row.course.students.length +
                             "</td>" +
 
                             "<td>" +
-                                row.language +
+                                row.student.firstName +
                             "</td>" +
                             "<td>" +
-                                row.minStudents +
+                                row.student.lastName +
                             "</td>" +
                             "<td>" +
-                                row.expStudents +
-                            "</td>" +
-                            "<td>" +
-                                row.maxStudents +
+                                row.student.email +
                             "</td>" +
                             "<td>" +
                                 actions +
@@ -170,19 +147,7 @@
                 updateBTN.classList.remove("loading");
             }
 
-            function syncApplications() {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', applicationsURL);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        applications = JSON.parse(xhr.responseText);
-                        console.log(applications);
-                    } else {
-                        console.warn('Request failed.  Returned status of ' + xhr.status);
-                    }
-                };
-                xhr.send();
-            }
+         
 
             function sync() {
                 updateBTN.classList.add("loading");
@@ -190,10 +155,7 @@
                 xhr.open('GET', resourceURL);
                 xhr.onload = function() {
                     if (xhr.status === 200) {
-                        syncApplications();
-                        setTimeout(function() {
-                            renderTable(coursesTABLE, JSON.parse(xhr.responseText));
-                        }, 100); 
+                        renderTable(applicationsTABLE, JSON.parse(xhr.responseText));
                     } else {
                         console.warn('Request failed.  Returned status of ' + xhr.status);
                     }
@@ -202,17 +164,16 @@
             }
 
             updateBTN.addEventListener('click', sync);
-            syncApplications();
             sync();
 
-            // APPLY for courses
-            function applyForCourse(courseID) {
-                console.info("APPLY for course:", courseID);
-                var applyBTN = document.getElementById("apply-course-" + courseID);
+            // ACCEPT or REJECT application
+            function acceptApplication(applicationID) {
+                console.info("ACCEPT application:", applicationID);
+                var applyBTN = document.getElementById("accept-application-" + applicationID);
                 applyBTN.classList.add("loading");
 
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', applyURLPrefix + "/" + courseID);
+                xhr.open('POST', resourceURL + "/accept/" + applicationID);
                 xhr.setRequestHeader(
                     /*[[${_csrf.headerName}]]*/"X-CSRF-TOKEN",
                     /*[[${_csrf.token}]]*/""
@@ -220,7 +181,7 @@
 
                 xhr.onload = function() {
                     if (xhr.status === 200) {
-                        console.log("Application sent! SYNC");
+                        console.log("Application ACCEPTED! SYNC");
                         applyBTN.classList.remove("loading");
                         sync();
                     } else {
@@ -230,10 +191,36 @@
                 xhr.send();
             }
 
-            coursesTABLE.addEventListener('click', function(event) {
+            function rejectApplication(applicationID) {
+                console.info("REJECT application:", applicationID);
+                var rejectBTN = document.getElementById("reject-application-" + applicationID);
+                rejectBTN.classList.add("loading");
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', resourceURL + "/reject/" + applicationID);
+                xhr.setRequestHeader(
+                    /*[[${_csrf.headerName}]]*/"X-CSRF-TOKEN",
+                    /*[[${_csrf.token}]]*/""
+                );
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        console.log("Application REJECTED! SYNC");
+                        rejectBTN.classList.remove("loading");
+                        sync();
+                    } else {
+                        console.warn('Request failed. Returned status of ' + xhr.status, xhr.responseText);
+                    }
+                };
+                xhr.send();
+            }
+
+            applicationsTABLE.addEventListener('click', function(event) {
                 if (event.target.tagName.toLowerCase() === 'button') {
-                    if (event.target.dataset.applyid != null) {
-                        applyForCourse(event.target.dataset.applyid)
+                    if (event.target.dataset.acceptid != null) {
+                        acceptApplication(event.target.dataset.acceptid)
+                    } else if (event.target.dataset.rejectid != null) {
+                        rejectApplication(event.target.dataset.rejectid)
                     }
                 }
             });

@@ -185,4 +185,8 @@ public class CourseEntity {
     public void setStudents(List<UserEntity> students) {
         this.students = students;
     }
+
+    public void addStudent(UserEntity student) {
+        this.students.add(student);
+    }
 }

@@ -20,8 +20,14 @@ public class ApplicationEntity {
     @ManyToOne
     private CourseEntity course;
 
+    private boolean isRejected;
+    private boolean isActive;
 
-    public ApplicationEntity() { }
+
+    public ApplicationEntity() {
+        this.isRejected = false;
+        this.isActive = true;
+    }
 
     public Long getID() {
         return ID;
@@ -53,5 +59,21 @@ public class ApplicationEntity {
 
     public void setCourse(CourseEntity course) {
         this.course = course;
+    }
+
+    public boolean isRejected() {
+        return isRejected;
+    }
+
+    public void setRejected(boolean rejected) {
+        isRejected = rejected;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

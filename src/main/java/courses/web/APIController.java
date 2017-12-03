@@ -157,4 +157,24 @@ public class APIController {
 
         return ResponseEntity.ok().body(applicationService.saveApplication(student, course));
     }
+
+    @PostMapping("/applications/accept/{id}")
+    public ResponseEntity<ApplicationEntity> acceptApplication(@PathVariable(value = "id") Long applicationID) {
+        ApplicationEntity applicationEntity = applicationRepository.findOne(applicationID);
+        if(applicationEntity == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().body(applicationService.acceptApplication(applicationEntity));
+    }
+
+    @PostMapping("/applications/reject/{id}")
+    public ResponseEntity<ApplicationEntity> rejectApplication(@PathVariable(value = "id") Long applicationID) {
+        ApplicationEntity applicationEntity = applicationRepository.findOne(applicationID);
+        if(applicationEntity == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().body(applicationService.rejectApplication(applicationEntity));
+    }
 }

@@ -6,4 +6,6 @@ import courses.domain.entity.UserEntity;
 
 public interface ApplicationService {
     ApplicationEntity saveApplication(UserEntity userEntity, CourseEntity courseEntity);
+    ApplicationEntity acceptApplication(ApplicationEntity applicationEntity);
+    ApplicationEntity rejectApplication(ApplicationEntity applicationEntity);
 }
