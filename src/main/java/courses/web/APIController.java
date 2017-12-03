@@ -1,14 +1,13 @@
 package courses.web;
 
-import courses.dao.CourseRepository;
-import courses.dao.ProgrammeRepository;
-import courses.dao.UserRepository;
-import courses.dao.UserTypeRepository;
+import courses.dao.*;
 import courses.domain.dto.CourseDTO;
 import courses.domain.dto.ProgrammeDTO;
+import courses.domain.entity.ApplicationEntity;
 import courses.domain.entity.CourseEntity;
 import courses.domain.entity.ProgrammeEntity;
 import courses.domain.entity.UserEntity;
+import courses.service.ApplicationService;
 import courses.service.CourseService;
 import courses.service.ProgrammeService;
 import courses.validation.exception.InvalidCourseProperty;
@@ -38,6 +37,11 @@ public class APIController {
 
     @Autowired
     private UserTypeRepository userTypeRepository;
+
+    @Autowired
+    private ApplicationRepository applicationRepository;
+    @Autowired
+    private ApplicationService applicationService;
 
     // Study Programmes
     @GetMapping("/programmes")
@@ -119,5 +123,38 @@ public class APIController {
     @GetMapping("/students")
     public List<UserEntity> getAllStudents() {
         return userRepository.findByType(userTypeRepository.findByName("STUDENT"));
+    }
+
+    // Applications
+    @GetMapping("/applications")
+    public List<ApplicationEntity> getAllApplications() {
+        return applicationRepository.findAll();
+    }
+
+
+    @GetMapping("/applications/student/{id}")
+    public List<ApplicationEntity> getAllApplicationsForStudent(@PathVariable(value = "id") Long studentID) {
+        UserEntity student = userRepository.findOne(studentID);
+        if(student == null) {
+            return null;
+        }
+
+        return applicationRepository.findByStudent(student);
+    }
+
+    @PostMapping("/applications/{studentID}/{courseID}")
+    public ResponseEntity<ApplicationEntity> createApplication(@PathVariable(value = "studentID") Long studentID,
+                                                               @PathVariable(value = "courseID") Long courseID) {
+        UserEntity student = userRepository.findOne(studentID);
+        if(student == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        CourseEntity course = courseRepository.findOne(courseID);
+        if(course == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(applicationService.saveApplication(student, course));
     }
 }

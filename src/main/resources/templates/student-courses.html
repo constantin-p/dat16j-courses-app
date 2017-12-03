@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+
+    <title th:text="#{label.courses.title} + ' | ' + #{label.brand} + ' ' + #{label.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <style type="text/css">
+        body {
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page">
+        <!-- off-screen toggle button -->
+        <a class="page-toggle" href="#sidebar-show">
+            <span class="icon-wrapper">
+                <span class="icon-menu"></span>
+            </span>
+        </a>
+
+        <!-- Sidebar -->
+        <div id="sidebar-show" class="page-sidebar sidebar bg-brand-student">
+            <div th:replace="fragments/sidebar :: header"/>
+
+            <div class="sidebar-section mb-4">
+                <ul class="menu">
+                    <li class="menu-item mb-4 mt-2">
+                        <figure th:replace="fragments/sidebar :: avatar"/>
+                    </li>
+                    <li class="menu-item">
+                        <a class="active"
+                            th:href="@{/student/courses}">
+                            <span th:replace="fragments/icon :: courses"/>
+                            <span class="menu-text"
+                                th:text="#{label.button.courses}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div th:replace="fragments/sidebar :: footer"/>
+        </div> <!-- END sidebar -->
+
+        <a class="page-overlay" href="#sidebar-hide"></a>
+
+        <div class="page-content-wrapper">
+            <!-- Content -->
+            <div class="container">
+                <header>
+                    <h1 class="flex-space-between">
+                        <span th:text="#{label.courses.title}"></span>
+                        <span>
+                            <a class="btn btn-primary" 
+                                th:href="@{/teacher/courses/new}"
+                                th:text="#{label.courses.new}"></a>
+                            <a class="btn" id="courses-update" th:title="#{label.courses.sync}">
+                                <span th:replace="fragments/icon :: sync"></span>
+                            </a>
+                        </span>
+                    </h1>
+                </header>
+
+                <div class="columns">
+                    <div class="column">
+                        <table class="table table-striped" id="courses-table">
+                            <thead>
+                                <tr>
+                                    <th th:text="#{label.courses.nameDA}"></th>
+                                    <th th:text="#{label.courses.nameEN}"></th>
+                                    <th th:text="#{label.courses.ECTS}"></th>
+                                    <th th:text="#{label.courses.language}"></th>
+                                    <th th:text="#{label.courses.minStudents}"></th>
+                                    <th th:text="#{label.courses.expStudents}"></th>
+                                    <th th:text="#{label.courses.maxStudents}"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="courses-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div> <!-- END comtainer -->
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function(event) {
+  
+            var resourceURL = '/api/courses';
+            var applicationsURL = '/api/applications/student/' + /*[[${ID}]]*/"";
+            var applyURLPrefix = '/api/applications/' + /*[[${ID}]]*/"";
+            var updateBTN = document.getElementById("courses-update");
+            var coursesTABLE = document.getElementById("courses-table-body");
+            var applications = [];
+
+            function clearNode(node) {
+                while(node.firstChild) {
+                    node.removeChild(node.firstChild);
+                }
+            }
+
+            function applicationExists(courseID) {
+                for (var i = 0; i < applications.length; i++) {
+                    if (applications[i].course.id == courseID) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function isEnrolled(course) {
+                for (var i = 0; i < course.students.length; i++) {
+                    if (course.students[i].id == /*[[${ID}]]*/"") {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function renderTable(tableBody, rows) {
+                clearNode(tableBody);
+                rows.forEach(row => {
+                    let actions = "<button data-applyid='" + row.id + "'' id='apply-course-" + row.id + "'" +
+                            "class='btn btn-sm btn-primary mr-1'>" +
+                            /*[[#{label.courses.apply}]]*/"Apply"
+                         + "</button>";
+
+                    if (isEnrolled(row)) {
+                        actions = /*[[#{label.courses.enrolled}]]*/"Enrolled";
+                    } else if (applicationExists(row.id)) {
+                        actions = /*[[#{label.courses.pending}]]*/"Application pending";
+                    }
+
+                    let tableRow = "" +
+                        "<tr>" +
+                            "<td>" +
+                                row.nameDA +
+                            "</td>" +
+                            "<td>" +
+                                row.nameEN +
+                            "</td>" +
+                            "<td>" +
+                                row.ectsPoints +
+                            "</td>" +
+
+                            "<td>" +
+                                row.language +
+                            "</td>" +
+                            "<td>" +
+                                row.minStudents +
+                            "</td>" +
+                            "<td>" +
+                                row.expStudents +
+                            "</td>" +
+                            "<td>" +
+                                row.maxStudents +
+                            "</td>" +
+                            "<td>" +
+                                actions +
+                            "</td>" +
+                        "</tr>";
+
+                    tableBody.insertAdjacentHTML("beforeend", tableRow)
+                });
+                updateBTN.classList.remove("loading");
+            }
+
+            function syncApplications() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', applicationsURL);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        applications = JSON.parse(xhr.responseText);
+                        console.log(applications);
+                    } else {
+                        console.warn('Request failed.  Returned status of ' + xhr.status);
+                    }
+                };
+                xhr.send();
+            }
+
+            function sync() {
+                updateBTN.classList.add("loading");
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', resourceURL);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        syncApplications();
+                        setTimeout(function() {
+                            renderTable(coursesTABLE, JSON.parse(xhr.responseText));
+                        }, 100); 
+                    } else {
+                        console.warn('Request failed.  Returned status of ' + xhr.status);
+                    }
+                };
+                xhr.send();
+            }
+
+            updateBTN.addEventListener('click', sync);
+            syncApplications();
+            sync();
+
+            // APPLY for courses
+            function applyForCourse(courseID) {
+                console.info("APPLY for course:", courseID);
+                var applyBTN = document.getElementById("apply-course-" + courseID);
+                applyBTN.classList.add("loading");
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', applyURLPrefix + "/" + courseID);
+                xhr.setRequestHeader(
+                    /*[[${_csrf.headerName}]]*/"X-CSRF-TOKEN",
+                    /*[[${_csrf.token}]]*/""
+                );
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        console.log("Application sent! SYNC");
+                        applyBTN.classList.remove("loading");
+                        sync();
+                    } else {
+                        console.warn('Request failed. Returned status of ' + xhr.status, xhr.responseText);
+                    }
+                };
+                xhr.send();
+            }
+
+            coursesTABLE.addEventListener('click', function(event) {
+                if (event.target.tagName.toLowerCase() === 'button') {
+                    if (event.target.dataset.applyid != null) {
+                        applyForCourse(event.target.dataset.applyid)
+                    }
+                }
+            });
+        });
+    /*]]>*/
+    </script>
+</body>
+</html>

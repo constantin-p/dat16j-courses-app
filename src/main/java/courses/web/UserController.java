@@ -74,6 +74,7 @@ public class UserController {
     protected static void injectUserData(Model model, Authentication authentication) {
         UserEntity user = ((CustomUser)authentication.getPrincipal()).getUser();
 
+        model.addAttribute("ID", user.getID());
         model.addAttribute("email", user.getEmail());
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
